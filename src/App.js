@@ -30,6 +30,7 @@ function App() {
   const handleClick = useCallback (async () => {
 
     
+    
 
     const newTodo = {
       title: value,
@@ -37,6 +38,7 @@ function App() {
       
       
     }
+
    const {data} = await axios.post(`${API_URL}/todos`, newTodo ) 
     setTodos(prevTodos => [...prevTodos, data ])
     setValue('')
@@ -52,6 +54,21 @@ function App() {
       setTodos(prevTodos => {
         return prevTodos.filter(prevTodo => {
           return prevTodo.id !== todo.id 
+        })
+      })
+    } catch (error) {
+      console.log('error:', error);
+    }
+  }
+
+
+  const changeTodoRequest = async (todo) => {
+    try{
+      setValue(todo.title)
+      const {data} = await axios.put(`${API_URL}/todos/${todo.id}`)
+      setTodos(prevTodos => {
+        return prevTodos.map(prevTodo => {
+          return prevTodo.id === todo.id ? data : prevTodo
         })
       })
     } catch (error) {
@@ -111,6 +128,7 @@ function App() {
                           checked={todo.isCompleted}
                           type="checkbox"/> 
                           <button onClick={() => deleteTodoRequest(todo)}>удалить</button>
+                          <button onClick={() => changeTodoRequest(todo)}>изменить</button>
                           
                         </li>
                         
